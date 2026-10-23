@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>Generador del vídeo del tratamiento — Nácar</title>
+  <!--
+    Página de trabajo, no forma parte de la web.
+    Dibuja el vídeo del tratamiento fotograma a fotograma con los mismos
+    modelos 3D de la web (modelos.js). Se graba con Playwright + ffmpeg:
+    ver README.md, apartado «Regenerar el vídeo».
+    Parámetros: ?w=1280&h=720  (o ?w=1080&h=1920 para vertical)
+  -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Instrument+Serif:ital@0;1&family=Martian+Mono:wght@400&display=swap">
+  <style>
+    html, body { margin: 0; background: #061820; }
+    canvas { display: block; }
+    #gl { position: absolute; left: -99999px; }
+  </style>
+  <script type="importmap">{ "imports": { "three": "../vendor/three.module.min.js", "three/addons/": "../vendor/" } }</script>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <canvas id="out"></canvas>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoomEnvironment } from 'three/addons/RoomEnvironment.js';
+    import { MeshSurfaceSampler } from 'three/addons/MeshSurfaceSampler.js';
+    import { crearDiente, crearCorona, crearPilar, crearTornillo, crearBloque, crearPerla, materialNacar, materialTitanio, materialAnodizado, materialEncia, materialHueso, utils } from '../modelos.js';
+    const { smooth, lerp, TAU } = utils;
+    const q = new URLSearchParams(location.search);
+    const W = +(q.get('w') || 1280), H = +(q.get('h') || 720);
+    const vertical = H > W;
+    const DUR = 24;
+
+    const gl = document.getElementById('gl');
+    const out = document.getElementById('out');
+    out.width = W; out.height = H;
+    const ctx = out.getContext('2d');
+    const renderer = new THREE.WebGLRenderer({ canvas: gl, antialias: true, alpha: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H, false);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.localClippingEnabled = true;
+    const scene = new THREE.Scene();
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    const camera = new THREE.PerspectiveCamera(vertical ? 42 : 30, W / H, 0.1, 100);
+    const luz = new THREE.DirectionalLight(0xffffff, 1.6); luz.position.set(4, 6, 8); scene.add(luz);
+    const lm = new THREE.PointLight(0x5fe0c8, 18, 30); lm.position.set(-5, -2, 4); scene.add(lm);
+    const lc = new THREE.PointLight(0xf07d6a, 10, 30); lc.position.set(5, -4, 2); scene.add(lc);
+
+    // ---------- Muela + partículas (capítulo 1) ----------
+    const OFF = 0.42;
+    const geoD = crearDiente();
+    const plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 10);
+    const matD = materialNacar(); matD.clippingPlanes = [plano];
+    const diente = new THREE.Mesh(geoD, matD); diente.position.y = OFF;
+    const g1 = new THREE.Group(); g1.add(diente); scene.add(g1);
+    const N = 9000, sampler = new MeshSurfaceSampler(diente).build();
+    const aE = new Float32Array(N * 3), aS = new Float32Array(N * 3), aN = new Float32Array(N * 3), aR = new Float32Array(N);
+    const v = new THREE.Vector3(), n = new THREE.Vector3();
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < N; i++) {
+      sampler.sample(v, n);
+      aE.set([v.x, v.y + OFF, v.z], i * 3); aN.set([n.x, n.y, n.z], i * 3);
+      const t = rnd(), ang = t * TAU * 3.2 + (i % 2 ? Math.PI : 0), rad = 1.25 + (rnd() - 0.5) * 0.18;
+      const s = i % 7 === 0 ? rnd() * 2 - 1 : 1;
+      aS.set([Math.cos(ang) * rad * s, lerp(-2.6, 2.6, t), Math.sin(ang) * rad * s], i * 3);
+      aR[i] = rnd();
+    }
+    const gp = new THREE.BufferGeometry();
+    gp.setAttribute('position', new THREE.BufferAttribute(aE, 3));
+    gp.setAttribute('aStart', new THREE.BufferAttribute(aS, 3));
+    gp.setAttribute('aNor', new THREE.BufferAttribute(aN, 3));
+    gp.setAttribute('aRand', new THREE.BufferAttribute(aR, 1));
+    const U = { uMorph: { value: 0 }, uTime: { value: 0 }, uScan: { value: 10 }, uFade: { value: 1 }, uSize: { value: 2.4 * H / 720 }, uA: { value: new THREE.Color('#5FE0C8') }, uB: { value: new THREE.Color('#F07D6A') } };
+    const pts = new THREE.Points(gp, new THREE.ShaderMaterial({
+      uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `attribute vec3 aStart; attribute vec3 aNor; attribute float aRand; uniform float uMorph, uTime, uScan, uSize; varying float vG, vR, vK;
+        void main(){ float d = aRand*0.35 + (1.0-clamp((position.y+1.4)/2.9,0.0,1.0))*0.25; float k = clamp((uMorph-d)/0.55,0.0,1.0); k = k*k*(3.0-2.0*k);
+        float a = uTime*0.35 + aRand*6.2831; vec3 h = aStart; float c = cos(uTime*0.6), s = sin(uTime*0.6); h.xz = mat2(c,-s,s,c)*h.xz;
+        vec3 p = mix(h, position + aNor*(0.035+0.05*sin(a*2.0)*k), k); p += aNor*k*(0.12+0.18*aRand)*(0.5+0.5*sin(a));
+        vec4 mv = modelViewMatrix*vec4(p,1.0); vG = exp(-pow((p.y-uScan)*7.0,2.0)); vR = aRand; vK = k;
+        gl_PointSize = uSize*(0.6+aRand*0.8+vG*2.2)*(14.0/-mv.z); gl_Position = projectionMatrix*mv; }`,
+      fragmentShader: `uniform vec3 uA, uB; uniform float uFade; varying float vG, vR, vK;
+        void main(){ float r = length(gl_PointCoord-0.5); if (r>0.5) discard; vec3 col = mix(uA,uB,step(0.86,vR)); col = mix(col, vec3(1.0), vG*0.8);
+        gl_FragColor = vec4(col, smoothstep(0.5,0.0,r)*(0.5+vG*0.9)*mix(1.0,uFade,vK)); }`
+    }));
+    pts.frustumCulled = false; g1.add(pts);
+    const scanMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, uniforms: { uO: { value: 0 } },
+      vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+      fragmentShader: 'uniform float uO; varying vec2 vUv; void main(){ float r=length(vUv-0.5)*2.0; float a=smoothstep(1.0,0.92,r)*smoothstep(0.7,0.98,r)+smoothstep(1.0,0.0,r)*0.18; gl_FragColor=vec4(0.37,0.88,0.78,a*uO); }' });
+    const scan = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.9), scanMat); scan.rotation.x = -Math.PI / 2; g1.add(scan);
+
+    // ---------- Implante (capítulos 2–4) ----------
+    const g2 = new THREE.Group(); scene.add(g2);
+    const corona = new THREE.Mesh(crearCorona(), materialNacar());
+    const wire = new THREE.Mesh(corona.geometry, new THREE.MeshBasicMaterial({ color: 0x5fe0c8, wireframe: true, transparent: true, opacity: 0, depthWrite: false }));
+    corona.add(wire);
+    const pilar = new THREE.Mesh(crearPilar(), materialAnodizado());
+    const tornillo = new THREE.Mesh(crearTornillo(), materialTitanio());
+    const gE = crearBloque({ ancho: 2.6, y0: -0.56, y1: -0.14, fondo: 1.5 });
+    const gH = crearBloque({ ancho: 2.5, y0: -2.05, y1: -0.6, fondo: 1.42, radio: 0.3 });
+    const mE = materialEncia(), mH = materialHueso();
+    const encia = new THREE.Mesh(gE, mE), hueso = new THREE.Mesh(gH, mH);
+    encia.renderOrder = hueso.renderOrder = 2;
+    const mL = new THREE.LineBasicMaterial({ color: 0x5fe0c8, transparent: true, opacity: 0, depthWrite: false });
+    const lin = new THREE.Group(); lin.add(new THREE.LineSegments(new THREE.EdgesGeometry(gE, 25), mL), new THREE.LineSegments(new THREE.EdgesGeometry(gH, 25), mL));
+    const guia = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.035, 16, 64), new THREE.MeshBasicMaterial({ color: 0x5fe0c8, transparent: true, opacity: 0, depthWrite: false }));
+    guia.rotation.x = Math.PI / 2;
+    g2.add(corona, pilar, tornillo, encia, hueso, lin, guia);
+
+    // Rejilla de laboratorio (capítulo 2)
+    const grid = new THREE.GridHelper(8, 32, 0x5fe0c8, 0x5fe0c8);
+    grid.material.transparent = true; grid.material.opacity = 0; grid.material.depthWrite = false; grid.position.y = -0.14; g2.add(grid);
+
+    // Perla saluda al final
+    const perla = crearPerla(); perla.scale.setScalar(0.55); scene.add(perla);
+
+    const CAP = [
+      { n: '01', t: 'Escáner intraoral', s: '6.000 imágenes por segundo · 20 µm' },
+      { n: '02', t: 'Diseño digital', s: 'Ves tu corona antes de fabricarla' },
+      { n: '03', t: 'Implante guiado', s: 'Titanio grado 5 · férula impresa en 3D' },
+      { n: '04', t: 'Tu nueva sonrisa', s: 'Nácar · Clínica dental · Mérida' }
+    ];
+
+    function setVis(o, on) { o.visible = on; }
+
+    window.renderAt = function (t) {
+      const cap = Math.min(3, Math.floor(t / 6));
+      const lt = t - cap * 6;
+      setVis(g1, t < 6.4);
+      setVis(g2, t >= 5.6);
+      perla.visible = t > 20;
+
+      // Cámara
+      if (t < 6) {
+        const a = 0.4 + t * 0.12;
+        camera.position.set(Math.sin(a) * 11, 0.8, Math.cos(a) * 11);
+        camera.lookAt(0, 0, 0);
+      } else if (t < 12) {
+        const k = smooth(6, 12, t);
+        camera.position.set(lerp(-3.5, 2.6, k), lerp(3.4, 2.2, k), lerp(7.5, 6.6, k));
+        camera.lookAt(0.0, 0.5, 0);
+      } else if (t < 18) {
+        const k = smooth(12, 18, t);
+        camera.position.set(lerp(4, 2.5, k), lerp(0.6, 0.2, k), lerp(11, 10, k));
+        camera.lookAt(0, -0.45, 0);
+      } else {
+        const k = smooth(18, 24, t);
+        camera.position.set(lerp(2.5, -1.2, k), lerp(0.4, 0.9, k), lerp(10, 12.5, k));
+        camera.lookAt(0, -0.1, 0);
+      }
+      if (vertical) { camera.position.multiplyScalar(1.05); }
+
+      // Capítulo 1
+      U.uTime.value = t; U.uMorph.value = Math.min(1.4, t / 2.4 * 1.4);
+      const k1 = smooth(1.6, 4.8, t), sy = lerp(1.35, -1.95, k1);
+      scan.position.y = sy; U.uScan.value = sy;
+      scanMat.uniforms.uO.value = smooth(1.4, 1.8, t) * (1 - smooth(4.6, 5.0, t));
+      U.uFade.value = lerp(1, 0.45, smooth(3.5, 5, t));
+      g1.updateMatrixWorld();
+      const w = new THREE.Vector3(0, t > 4.8 ? -50 : sy, 0).applyMatrix4(g1.matrixWorld);
+      plano.constant = -w.y;
+      g1.position.y = 0; g1.scale.setScalar(1 - smooth(5.6, 6.4, t) * 0.6);
+
+      // Capítulos 2–4: implante
+      g2.scale.setScalar(smooth(5.6, 6.6, t));
+      const xr = smooth(11.5, 12.5, t) * (1 - smooth(19, 21, t));          // rayos X
+      const eO = t < 12 ? 1 : lerp(1, 0.14, xr);
+      mE.opacity = eO; mE.depthWrite = eO > 0.98;
+      const xrH = smooth(11.5, 12.5, t);
+      mH.opacity = t < 12 ? 0 : smooth(12, 12.6, t) * lerp(1, 0.16, xrH); mH.depthWrite = false;
+      hueso.visible = t >= 12;
+      mL.opacity = 0.6 * xr + 0.25 * xrH * (1 - xr);
+      lin.visible = mL.opacity > 0.01;
+      grid.material.opacity = 0.18 * smooth(6.5, 7.5, t) * (1 - smooth(11, 12, t));
+      grid.visible = grid.material.opacity > 0.005;
+      // Corona: alambre → sólida (cap. 2), arriba fuera (cap. 3), baja (cap. 4)
+      wire.material.opacity = t < 12 ? 0.55 * smooth(6.2, 7, t) * (1 - smooth(9.5, 11, t)) : 0;
+      corona.material.opacity = 1;
+      corona.material.transparent = t < 11;
+      corona.material.opacity = t < 11 ? smooth(8.5, 10.5, t) : 1;
+      corona.material.depthWrite = t >= 11;
+      const subeCorona = smooth(11.2, 12.2, t) * (1 - smooth(18.2, 19.2, t));
+      corona.position.y = 0.2 + 2.4 * subeCorona;
+      corona.rotation.y = t < 12 ? (t - 6) * 0.5 : 0;
+      corona.visible = !(t > 12.2 && t < 18.1);
+      wire.visible = wire.material.opacity > 0.01;
+      const tz = smooth(12.6, 16, t);                       // tornillo entra girando
+      tornillo.position.y = -0.55 + 1.6 * (1 - tz);
+      tornillo.rotation.y = -tz * TAU * 4;
+      tornillo.visible = t >= 12.2;
+      guia.material.opacity = smooth(12.2, 12.8, t) * (1 - smooth(16, 16.8, t));
+      guia.position.y = 0.05;
+      guia.visible = guia.material.opacity > 0.01;
+      const pz = smooth(16.2, 17.4, t);
+      pilar.position.y = -0.55 + 1.6 * (1 - pz);
+      pilar.visible = t >= 16.2;
+      g2.rotation.y = t < 12 ? 0 : (t - 12) * 0.08;
+      if (t >= 18) g2.rotation.y = 0.48 + (t - 18) * 0.15;
+      // Perla
+      const pk = smooth(20, 20.8, t);
+      perla.position.set(vertical ? 0.9 : 2.3, -1.2 + Math.sin(t * 3) * 0.04, 0.6);
+      perla.scale.setScalar(0.55 * pk);
+      perla.rotation.y = -0.5;
+      perla.userData.brazos[1].rotation.z = 2.5 + Math.sin(t * 12) * 0.35;
+      perla.userData.brazos[0].rotation.z = -0.55;
+
+      renderer.render(scene, camera);
+
+      // ---------- Composición 2D ----------
+      const bg = ctx.createRadialGradient(W * 0.5, H * 0.55, 0, W * 0.5, H * 0.55, Math.max(W, H) * 0.75);
+      bg.addColorStop(0, '#0F3442'); bg.addColorStop(1, '#061820');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      // retícula tenue
+      ctx.strokeStyle = 'rgba(95,224,200,0.05)'; ctx.lineWidth = 1;
+      const step = Math.round(H / 12);
+      for (let x = (W % step) / 2; x < W; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+      for (let y = (H % step) / 2; y < H; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+      ctx.drawImage(gl, 0, 0, W, H);
+      // Destello final sobre la corona
+      if (t > 19 && t < 20.4) {
+        const f = (t - 19) / 1.4;
+        const gx = lerp(-W * 0.3, W * 1.3, f);
+        const gr = ctx.createLinearGradient(gx - W * 0.15, 0, gx + W * 0.15, H);
+        gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.22)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
+      }
+      // Títulos de capítulo
+      const u = H / 720;
+      const pad = (vertical ? 64 : 56) * u;
+      const ap = smooth(0, 0.6, lt) * (cap === 3 ? 1 : 1 - smooth(5.4, 6, lt));
+      ctx.globalAlpha = ap;
+      ctx.fillStyle = '#5FE0C8';
+      ctx.font = `${13 * u}px "Martian Mono"`;
+      ctx.fillText(`${CAP[cap].n} / 04 · NÁCAR`, pad, pad + 10 * u);
+      ctx.fillStyle = '#EAF4F2';
+      ctx.font = `${(vertical ? 64 : 54) * u}px "Instrument Serif"`;
+      ctx.fillText(CAP[cap].t, pad, pad + (vertical ? 76 : 66) * u);
+      ctx.fillStyle = '#9DB7BC';
+      ctx.font = `${17 * u}px "Hanken Grotesk"`;
+      ctx.fillText(CAP[cap].s, pad, pad + (vertical ? 112 : 98) * u);
+      ctx.globalAlpha = 1;
+      // Barra de progreso
+      ctx.fillStyle = 'rgba(234,244,242,0.15)'; ctx.fillRect(pad, H - pad, W - pad * 2, 2 * u);
+      ctx.fillStyle = '#5FE0C8'; ctx.fillRect(pad, H - pad, (W - pad * 2) * (t / DUR), 2 * u);
+      // Cierre
+      if (t > 21.6) {
+        const a = smooth(21.6, 22.4, t);
+        ctx.globalAlpha = a;
+        ctx.fillStyle = 'rgba(6,24,32,0.55)'; ctx.fillRect(0, H * 0.72, W, H * 0.28);
+        ctx.fillStyle = '#EAF4F2'; ctx.textAlign = 'center';
+        ctx.font = `italic ${(vertical ? 58 : 44) * u}px "Instrument Serif"`;
+        ctx.fillText('Primera visita y estudio 3D gratis', W / 2, H * 0.82);
+        ctx.fillStyle = '#5FE0C8'; ctx.font = `${14 * u}px "Martian Mono"`;
+        ctx.fillText('Clínica ficticia · concepto de web de Daniel Durán', W / 2, H * 0.82 + 40 * u);
+        ctx.textAlign = 'left'; ctx.globalAlpha = 1;
+      }
+      return true;
+    };
+    Promise.all(['54px "Instrument Serif"', 'italic 44px "Instrument Serif"', '17px "Hanken Grotesk"', '13px "Martian Mono"'].map(f => document.fonts.load(f)))
+      .then(() => document.fonts.ready).then(() => { window.listo = true; });
+  </script>
+</body>
+</html>

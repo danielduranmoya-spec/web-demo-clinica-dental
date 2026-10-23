@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nácar Clínica Dental Mérida — Implantes guiados, ortodoncia invisible y estética dental</title>
+  <meta name="description" content="Clínica dental en Mérida (Badajoz) con escáner intraoral 3D, implantes guiados por ordenador, ortodoncia invisible, blanqueamiento y odontopediatría. Primera visita y estudio 3D sin coste. Financiación al 0 %.">
+  <!-- Demo con datos ficticios: quita esta línea en la web de un cliente real -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0A2530">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://danielduranmoya-spec.github.io/web-demo-clinica-dental/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="Nácar Clínica Dental">
+  <meta property="og:title" content="Nácar Clínica Dental · Mérida">
+  <meta property="og:description" content="Mira tu implante en 3D antes de ponértelo. Escáner intraoral, cirugía guiada y ortodoncia invisible en el centro de Mérida.">
+  <meta property="og:url" content="https://danielduranmoya-spec.github.io/web-demo-clinica-dental/">
+  <meta property="og:image" content="https://danielduranmoya-spec.github.io/web-demo-clinica-dental/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..700;1,400&family=Instrument+Serif:ital@0;1&family=Martian+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="modulepreload" href="vendor/three.module.min.js">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <!-- three.js va dentro del repo (vendor/) para no depender de ningún CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three.module.min.js",
+      "three/addons/": "./vendor/"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "Nácar Clínica Dental",
+    "description": "Clínica dental en Mérida especializada en implantes guiados, ortodoncia invisible, estética dental y odontopediatría (negocio ficticio, web de demostración).",
+    "url": "https://danielduranmoya-spec.github.io/web-demo-clinica-dental/",
+    "image": "https://danielduranmoya-spec.github.io/web-demo-clinica-dental/og.jpg",
+    "telephone": "+34924000000",
+    "priceRange": "€€",
+    "currenciesAccepted": "EUR",
+    "paymentAccepted": "Efectivo, tarjeta, Bizum, financiación",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Paseo del Nácar, 7 (dirección ficticia)",
+      "postalCode": "06800",
+      "addressLocality": "Mérida",
+      "addressRegion": "Badajoz",
+      "addressCountry": "ES"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 38.9161, "longitude": -6.3437 },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"], "opens": "09:30", "closes": "14:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"], "opens": "16:00", "closes": "21:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "09:30", "closes": "15:00" }
+    ],
+    "availableService": [
+      { "@type": "MedicalProcedure", "name": "Implantes dentales guiados por ordenador" },
+      { "@type": "MedicalProcedure", "name": "Ortodoncia invisible" },
+      { "@type": "MedicalProcedure", "name": "Carillas y estética dental" },
+      { "@type": "MedicalProcedure", "name": "Blanqueamiento dental" },
+      { "@type": "MedicalProcedure", "name": "Odontopediatría" },
+      { "@type": "MedicalProcedure", "name": "Higiene y periodoncia" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Cuánto cuesta un implante dental en Nácar?", "acceptedAnswer": { "@type": "Answer", "text": "Desde 950 € el implante con su pilar. La corona va aparte (desde 450 €). El estudio 3D previo con escáner y TAC es gratuito." } },
+      { "@type": "Question", "name": "¿Duele ponerse un implante?", "acceptedAnswer": { "@type": "Answer", "text": "Se hace con anestesia local y, con cirugía guiada, sin abrir la encía en la mayoría de los casos. Si tienes miedo al dentista ofrecemos sedación consciente." } },
+      { "@type": "Question", "name": "¿Puedo pagar a plazos?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Financiamos cualquier tratamiento de más de 300 € hasta en 24 meses sin intereses, sujeto a la aprobación de la entidad financiera." } },
+      { "@type": "Question", "name": "¿Atendéis urgencias?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, reservamos huecos cada día para urgencias. Llama antes de las 12:00 y te vemos ese mismo día." } }
+    ]
+  }
+  </script>
+</head>
+<body data-fondo="oscuro">
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-logo" viewBox="0 0 32 32"><path d="M9.2 5.5c2.6 0 3.9 1.6 6.8 1.6s4.2-1.6 6.8-1.6c3.6 0 5.7 3 5.7 6.9 0 4.4-2.1 6.9-3 10.6-.7 2.9-1.3 4.7-2.8 4.7-2.4 0-2.1-6.6-4.7-6.6s-2.3 6.6-4.7 6.6c-1.5 0-2.1-1.8-2.8-4.7-.9-3.7-3-6.2-3-10.6 0-3.9 2.1-6.9 5.7-6.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11.5 10.5c1.4.6 2.9.9 4.5.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 19.5l1.2-3.6A7.5 7.5 0 1 1 8.4 18.6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 10.2h6M9 13.4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.8l2.6-.3 1.6 4.3-2 1.3a11 11 0 0 0 6.1 6.1l1.3-2 4.3 1.6-.3 2.6c-.2 1.3-1.3 2.2-2.6 2.1C10.5 19 5 13.5 4.5 6.4c-.1-1.3.8-2.4 2.1-2.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-implante" viewBox="0 0 48 48"><path class="draw" d="M14 8c3 0 5 2 10 2s7-2 10-2c4 0 6 3 6 7 0 3-1 5-3 6H11c-2-1-3-3-3-6 0-4 2-7 6-7zM18 21h12l-1 5H19zM20 26h8M20.5 30h7M21 34h6M21.5 38h5M23 42h2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alineador" viewBox="0 0 48 48"><path class="draw" d="M6 26c0-8 8-14 18-14s18 6 18 14M10 26c0-6 6-10 14-10s14 4 14 10M8 26v4c0 2 1.5 3 3 3h26c1.5 0 3-1 3-3v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path class="draw" d="M17 17v9M24 16v10M31 17v9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-carilla" viewBox="0 0 48 48"><path class="draw" d="M16 7h16c2 0 3 2 3 4l-2 22c-.4 4-4 8-9 8s-8.6-4-9-8l-2-22c0-2 1-4 3-4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path class="draw" d="M20 13l2 20M28 13l-1 9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-brillo" viewBox="0 0 48 48"><path class="draw" d="M24 6v8M24 34v8M6 24h8M34 24h8M11.5 11.5l5.5 5.5M31 31l5.5 5.5M36.5 11.5L31 17M17 31l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle class="draw" cx="24" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-peque" viewBox="0 0 48 48"><path class="draw" d="M14 10c3 0 5 2 10 2s7-2 10-2c4.5 0 7 3.5 7 8 0 5-2.4 8-3.5 12.5-.9 3.5-1.6 5.5-3.4 5.5-2.8 0-2.5-7-5.1-7h-10c-2.6 0-2.3 7-5.1 7-1.8 0-2.5-2-3.4-5.5C9.4 26 7 23 7 18c0-4.5 2.5-8 7-8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="19" cy="19" r="1.6" fill="currentColor"/><circle cx="29" cy="19" r="1.6" fill="currentColor"/><path class="draw" d="M20 24c2.4 2 5.6 2 8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-encia" viewBox="0 0 48 48"><path class="draw" d="M6 20c6 4 12-4 18 0s12-4 18 0M6 28c6 4 12-4 18 0s12-4 18 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="draw" d="M14 12v4M24 10v6M34 12v4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <!-- Lienzo 3D fijo: el diente, el implante y Perla viajan por las secciones -->
+  <canvas id="escena" class="escena" aria-hidden="true"></canvas>
+
+  <header class="site-header" data-header>
+    <div class="concept-bar">
+      <div class="wrap concept-bar__inner">
+        <p><span class="concept-bar__tag">Concepto</span> Clínica ficticia<span class="concept-bar__long">: ejemplo de web interactiva 3D diseñada por Daniel Durán. Datos inventados</span>.</p>
+        <a href="https://danielduranmoya-spec.github.io/#contacto">Quiero una web así <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="wrap site-header__inner">
+      <a class="logo" href="#inicio" aria-label="Nácar Clínica Dental, ir al inicio">
+        <svg class="logo__mark" aria-hidden="true"><use href="#i-logo"/></svg>
+        <span class="logo__word">Nácar</span>
+        <span class="logo__sub">Clínica dental · Mérida</span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#tratamientos">Tratamientos</a>
+        <a href="#implante">Implante 3D</a>
+        <a href="#video">Vídeo</a>
+        <a href="#sonrisa">Blanqueamiento</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#precios">Precios</a>
+        <a class="btn btn--accent btn--small nav__cta" href="#cita">Pedir cita</a>
+      </nav>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
+        <svg aria-hidden="true"><use href="#i-menu"/></svg>
+        <span class="sr-only">Abrir menú</span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="menu-movil" data-menu hidden>
+      <nav aria-label="Menú móvil">
+        <a href="#tratamientos"><span class="mono">01</span> Tratamientos</a>
+        <a href="#implante"><span class="mono">02</span> Implante 3D</a>
+        <a href="#video"><span class="mono">03</span> Vídeo</a>
+        <a href="#sonrisa"><span class="mono">04</span> Blanqueamiento</a>
+        <a href="#equipo"><span class="mono">05</span> Equipo</a>
+        <a href="#peques"><span class="mono">06</span> Peques</a>
+        <a href="#precios"><span class="mono">07</span> Precios</a>
+      </nav>
+      <a class="btn btn--accent" href="#cita">Pedir cita</a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- ===================== INICIO ===================== -->
+    <section class="hero sec-3d" id="inicio" data-fondo="oscuro" aria-labelledby="hero-title">
+      <div class="hero__grid wrap">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Clínica dental · Mérida</p>
+          <h1 class="hero__title" id="hero-title"><span class="split">Sonrisas diseñadas</span> <em class="split">al&nbsp;micrómetro.</em></h1>
+          <p class="hero__lead">Escáner intraoral 3D, implantes guiados por ordenador y ortodoncia invisible en el centro de Mérida. Ves tu tratamiento terminado antes de empezarlo.</p>
+          <div class="hero__cta">
+            <a class="btn btn--accent btn--big" href="#cita">Pedir primera visita gratis<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--ghost btn--big" href="#implante">Ver el implante en 3D</a>
+          </div>
+          <dl class="hero__stats">
+            <div><dt class="mono">Pacientes</dt><dd><span class="tnum" data-count="3200">3.200</span>+</dd></div>
+            <div><dt class="mono">Precisión</dt><dd><span class="tnum">20</span> µm</dd></div>
+            <div><dt class="mono">Desde</dt><dd><span class="tnum">2008</span></dd></div>
+          </dl>
+        </div>
+        <div class="hero__visual">
+          <div class="hero__anchor anchor" data-anchor="hero" aria-hidden="true">
+            <svg class="tooth-svg" viewBox="0 0 200 260" data-fallback><path d="M58 18c22 0 30 12 42 12s20-12 42-12c30 0 46 24 46 56 0 36-16 54-24 84-6 24-10 84-30 84-18 0-14-64-34-64s-16 64-34 64c-20 0-24-60-30-84-8-30-24-48-24-84 0-32 16-56 46-56z"/></svg>
+          </div>
+          <div class="hud" aria-hidden="true">
+            <p class="hud__tag hud__tag--a mono"><span>SCAN</span> 0,02 mm</p>
+            <p class="hud__tag hud__tag--b mono"><span>Ø</span> 4,1 mm · Ti grado 5</p>
+            <p class="hud__tag hud__tag--c mono"><span>VITA</span> A1 → BL2</p>
+            <div class="hud__ring"></div>
+          </div>
+        </div>
+      </div>
+      <p class="hero__scroll mono" aria-hidden="true"><span class="hero__scroll-line"></span>Desliza</p>
+      <div class="loader" role="status" aria-live="polite" data-loader>
+        <span class="loader__bar"><span data-loader-bar></span></span>
+        <span class="loader__text mono" data-loader-text>Escaneando el diente 3D…</span>
+      </div>
+    </section>
+
+    <div class="ticker" aria-label="Ventajas">
+      <div class="ticker__track">
+        <p>Primera visita y estudio 3D gratis</p><p>Financiación hasta 24 meses al 0&nbsp;%</p><p>Urgencias el mismo día</p><p>Sedación consciente</p><p>Parking concertado a 50&nbsp;m</p><p>Abierto hasta las 21:00</p>
+        <p aria-hidden="true">Primera visita y estudio 3D gratis</p><p aria-hidden="true">Financiación hasta 24 meses al 0&nbsp;%</p><p aria-hidden="true">Urgencias el mismo día</p><p aria-hidden="true">Sedación consciente</p><p aria-hidden="true">Parking concertado a 50&nbsp;m</p><p aria-hidden="true">Abierto hasta las 21:00</p>
+      </div>
+    </div>
+
+    <!-- ===================== TRATAMIENTOS ===================== -->
+    <section class="sec sec--perla" id="tratamientos" aria-labelledby="trat-title">
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="eyebrow">01 · Tratamientos</p>
+          <h2 class="sec-title" id="trat-title">Todo lo que tu boca necesita, <em>bajo un mismo techo.</em></h2>
+          <p class="sec-lead">Seis especialidades y un mismo método: primero te escaneamos, luego te enseñamos el resultado en 3D y solo entonces empezamos.</p>
+        </header>
+        <ul class="cards" role="list">
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-implante"/></svg>
+            <h3>Implantes guiados</h3>
+            <p>Planificamos el implante sobre tu TAC y lo colocamos con una férula impresa en 3D. Menos cortes, menos inflamación.</p>
+            <p class="card__meta mono"><span>Desde 950&nbsp;€</span><span>1 h · 1 visita</span></p>
+          </li>
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-alineador"/></svg>
+            <h3>Ortodoncia invisible</h3>
+            <p>Alineadores transparentes que cambias cada dos semanas. Te mostramos tu sonrisa final antes de firmar nada.</p>
+            <p class="card__meta mono"><span>Desde 2.900&nbsp;€</span><span>6–18 meses</span></p>
+          </li>
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-carilla"/></svg>
+            <h3>Carillas y estética</h3>
+            <p>Carillas de porcelana de 0,3&nbsp;mm diseñadas digitalmente. Pruebas un «mock-up» en boca el primer día.</p>
+            <p class="card__meta mono"><span>Desde 390&nbsp;€/u</span><span>2 visitas</span></p>
+          </li>
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-brillo"/></svg>
+            <h3>Blanqueamiento</h3>
+            <p>Combinado en clínica y en casa, con férulas a medida. Hasta 8 tonos más claro sin sensibilidad.</p>
+            <p class="card__meta mono"><span>290&nbsp;€</span><span>1 sesión + casa</span></p>
+          </li>
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-peque"/></svg>
+            <h3>Odontopediatría</h3>
+            <p>Revisiones para peques desde los 3 años con Perla, nuestra muela que enseña a cepillarse.</p>
+            <p class="card__meta mono"><span>Revisión 0&nbsp;€</span><span>Hasta 14 años</span></p>
+          </li>
+          <li class="card reveal">
+            <svg class="card__icon" aria-hidden="true"><use href="#i-encia"/></svg>
+            <h3>Higiene y periodoncia</h3>
+            <p>Limpieza con aire-polvo de glicina y control de encías con sondaje digital. Tu sangrado, medido.</p>
+            <p class="card__meta mono"><span>55&nbsp;€</span><span>45 min</span></p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== IMPLANTE 3D (scroll) ===================== -->
+    <section class="implante sec-3d" id="implante" data-fondo="oscuro" aria-labelledby="imp-title">
+      <div class="implante__stage" data-implante>
+        <div class="implante__anchor anchor" data-anchor="implante" aria-hidden="true"></div>
+        <header class="implante__head">
+          <p class="eyebrow">02 · Tu implante, por dentro</p>
+          <h2 class="sec-title" id="imp-title">Desliza y <em>desmóntalo.</em></h2>
+        </header>
+        <ol class="pasos" aria-label="Partes del implante">
+          <li class="paso" data-paso="0">
+            <p class="paso__num mono">01 / Corona</p>
+            <h3>Corona de zirconio estratificado</h3>
+            <p>Fresada a partir de tu escáner y maquillada a mano con el color exacto de tus dientes vecinos.</p>
+          </li>
+          <li class="paso" data-paso="1">
+            <p class="paso__num mono">02 / Encía y hueso</p>
+            <h3>Planificado sobre tu TAC</h3>
+            <p>Cortamos la encía y el hueso en la pantalla, no en tu boca. Decidimos el ángulo y la profundidad al décimo de milímetro.</p>
+          </li>
+          <li class="paso" data-paso="2">
+            <p class="paso__num mono">03 / Despiece</p>
+            <h3>Tres piezas, una sola raíz</h3>
+            <p>Corona, pilar de titanio anodizado y tornillo de titanio grado&nbsp;5 de 4,1&nbsp;mm. Todo con garantía de por vida del fabricante.</p>
+          </li>
+          <li class="paso" data-paso="3">
+            <p class="paso__num mono">04 / Colocación</p>
+            <h3>Se atornilla en una sola visita</h3>
+            <p>Con cirugía guiada, el implante entra a través de una férula impresa en 3D. En la mayoría de casos sales con un diente provisional.</p>
+          </li>
+        </ol>
+        <div class="implante__rail" aria-hidden="true">
+          <span class="implante__rail-fill" data-rail></span>
+          <ol class="ticks">
+            <li data-tick="0">Corona</li><li data-tick="1">Hueso</li><li data-tick="2">Despiece</li><li data-tick="3">Colocación</li>
+          </ol>
+        </div>
+        <p class="implante__specs mono" aria-hidden="true" data-specs>Ø 4,1 × 11,5 mm · par 35 N·cm</p>
+      </div>
+    </section>
+
+    <!-- ===================== VÍDEO INTERACTIVO ===================== -->
+    <section class="sec sec--abisal video-sec" id="video" aria-labelledby="video-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--center">
+          <p class="eyebrow">03 · Vídeo interactivo</p>
+          <h2 class="sec-title" id="video-title">Tu tratamiento en <em>24 segundos.</em></h2>
+          <p class="sec-lead">Salta por capítulos o pulsa los puntos que aparecen sobre el vídeo para saber qué está pasando en cada momento.</p>
+        </header>
+        <div class="player" data-player>
+          <div class="player__screen">
+            <video class="player__video" playsinline muted preload="metadata" poster="video/tratamiento-poster.jpg" data-video aria-describedby="video-desc">
+              <source src="video/tratamiento.webm" type="video/webm">
+              <source src="video/tratamiento.mp4" type="video/mp4">
+            </video>
+            <p class="sr-only" id="video-desc">Animación en cuatro capítulos: escáner intraoral, diseño digital de la sonrisa, colocación guiada del implante y resultado final.</p>
+            <div class="player__hotspots" data-hotspots></div>
+            <button class="player__big" type="button" data-big-play aria-label="Reproducir vídeo">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </button>
+            <div class="player__card" data-card hidden>
+              <p class="mono" data-card-kicker></p>
+              <h3 data-card-title></h3>
+              <p data-card-text></p>
+              <button class="btn btn--accent btn--small" type="button" data-card-close>Seguir viendo</button>
+            </div>
+          </div>
+          <div class="player__bar">
+            <button class="player__btn" type="button" data-toggle aria-label="Reproducir">
+              <svg aria-hidden="true" data-icon-play><use href="#i-play"/></svg>
+              <svg aria-hidden="true" data-icon-pause hidden><use href="#i-pause"/></svg>
+            </button>
+            <div class="player__track" data-track role="slider" tabindex="0" aria-label="Posición del vídeo" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0" aria-valuetext="0 segundos">
+              <span class="player__fill" data-fill></span>
+              <span class="player__marks" data-marks></span>
+            </div>
+            <span class="player__time mono" data-time>0:00</span>
+          </div>
+          <ol class="chapters-list" data-chapters>
+            <li><button type="button" data-chapter="0"><span class="mono">0:00</span> Escáner intraoral</button></li>
+            <li><button type="button" data-chapter="6"><span class="mono">0:06</span> Diseño digital</button></li>
+            <li><button type="button" data-chapter="12"><span class="mono">0:12</span> Implante guiado</button></li>
+            <li><button type="button" data-chapter="18"><span class="mono">0:18</span> Tu nueva sonrisa</button></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BLANQUEAMIENTO (3D) ===================== -->
+    <section class="sonrisa sec-3d" id="sonrisa" data-fondo="claro" aria-labelledby="son-title">
+      <div class="wrap sonrisa__grid">
+        <div class="sonrisa__copy">
+          <p class="eyebrow">04 · Simulador de blanqueamiento</p>
+          <h2 class="sec-title" id="son-title">Elige tu tono. <em>Míralo en 3D.</em></h2>
+          <p class="sec-lead">Mueve el control por la guía de color VITA, la misma que usamos en consulta. El diente cambia en tiempo real.</p>
+          <div class="shade">
+            <label class="shade__label" for="shade-range">Tono: <strong data-shade-name>A3</strong> <span class="mono" data-shade-note>tu tono de partida típico</span></label>
+            <input class="shade__range" id="shade-range" type="range" min="0" max="7" step="1" value="5" data-shade>
+            <ol class="shade__swatches" aria-hidden="true" data-swatches></ol>
+          </div>
+          <p class="sonrisa__result" data-shade-result>Con un blanqueamiento combinado pasarías de A3 a <strong>A1</strong>: unos 6 tonos más claro.</p>
+          <a class="btn btn--dark" href="#cita" data-shade-cta>Quiero este tono</a>
+        </div>
+        <div class="sonrisa__visual">
+          <div class="sonrisa__anchor anchor" data-anchor="sonrisa" aria-hidden="true"></div>
+          <p class="sonrisa__hint mono" aria-hidden="true">Arrastra para girarlo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EQUIPO ===================== -->
+    <section class="sec sec--perla2" id="equipo" aria-labelledby="eq-title">
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="eyebrow">05 · Equipo y tecnología</p>
+          <h2 class="sec-title" id="eq-title">Cuatro especialistas. <em>Cero prisas.</em></h2>
+          <p class="sec-lead">Citas de 45 minutos como mínimo. El mismo profesional te ve de principio a fin.</p>
+        </header>
+        <ul class="team" role="list">
+          <li class="person reveal"><span class="person__avatar" style="--h:168" aria-hidden="true">LS</span><h3>Dra. Lucía Sanabria</h3><p>Implantología y cirugía guiada</p><p class="mono">Col. 06-0000 · ficticio</p></li>
+          <li class="person reveal"><span class="person__avatar" style="--h:12" aria-hidden="true">ML</span><h3>Dr. Marcos Ledesma</h3><p>Ortodoncia invisible</p><p class="mono">Col. 06-0001 · ficticio</p></li>
+          <li class="person reveal"><span class="person__avatar" style="--h:200" aria-hidden="true">IP</span><h3>Dra. Irene Pajuelo</h3><p>Odontopediatría</p><p class="mono">Col. 06-0002 · ficticio</p></li>
+          <li class="person reveal"><span class="person__avatar" style="--h:30" aria-hidden="true">AG</span><h3>Ana Gómez</h3><p>Higienista dental</p><p class="mono">Higiene y prevención</p></li>
+        </ul>
+        <ul class="tech" role="list">
+          <li class="reveal"><span class="tech__n mono">01</span><h3>Escáner intraoral</h3><p>Adiós a la pasta de impresiones: 2 minutos de escaneo y tu boca en 3D.</p></li>
+          <li class="reveal"><span class="tech__n mono">02</span><h3>TAC 3D de haz cónico</h3><p>La dosis de radiación de un vuelo Madrid–Nueva York.</p></li>
+          <li class="reveal"><span class="tech__n mono">03</span><h3>Impresión 3D en clínica</h3><p>Férulas quirúrgicas y provisionales listos en el día.</p></li>
+          <li class="reveal"><span class="tech__n mono">04</span><h3>Sedación consciente</h3><p>Con anestesista. Para quien lo pasa mal en el sillón.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== PEQUES (3D personaje) ===================== -->
+    <section class="peques sec-3d" id="peques" data-fondo="menta" aria-labelledby="peq-title">
+      <div class="wrap peques__grid">
+        <div class="peques__visual">
+          <div class="peques__anchor anchor" data-anchor="peques" aria-hidden="true"></div>
+          <p class="peques__bubble" data-bubble aria-live="polite">¡Hola! Soy Perla. ¡Tócame!</p>
+        </div>
+        <div class="peques__copy">
+          <p class="eyebrow">06 · Para peques</p>
+          <h2 class="sec-title" id="peq-title">Conoce a <em>Perla.</em></h2>
+          <p class="sec-lead">Es la muela más presumida de Mérida y la guía de nuestros pacientes de 3 a 14 años. Con ella, la primera visita es un juego.</p>
+          <div class="peques__actions" role="group" aria-label="Juega con Perla">
+            <button class="chip" type="button" data-perla="saluda">👋 Saluda</button>
+            <button class="chip" type="button" data-perla="salta">🦘 Salta</button>
+            <button class="chip" type="button" data-perla="gira">🌀 Da una vuelta</button>
+            <button class="chip" type="button" data-perla="cepilla">🪥 ¿Cuánto me cepillo?</button>
+          </div>
+          <ul class="peques__list">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Revisión y flúor gratis hasta los 14 años</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Selladores y control de la mordida</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Diploma de valiente al salir</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRECIOS ===================== -->
+    <section class="sec sec--perla" id="precios" aria-labelledby="pre-title">
+      <div class="wrap precios__grid">
+        <div>
+          <header class="sec-head">
+            <p class="eyebrow">07 · Precios claros</p>
+            <h2 class="sec-title" id="pre-title">Lo que pagas, <em>por escrito.</em></h2>
+            <p class="sec-lead">Presupuesto cerrado tras el estudio 3D. Sin sorpresas a mitad de tratamiento.</p>
+          </header>
+          <table class="prices">
+            <caption class="sr-only">Precios orientativos de los tratamientos</caption>
+            <tbody>
+              <tr><th scope="row">Primera visita + estudio 3D</th><td><strong>Gratis</strong></td></tr>
+              <tr><th scope="row">Higiene dental</th><td>55&nbsp;€</td></tr>
+              <tr><th scope="row">Empaste estético</th><td>desde 60&nbsp;€</td></tr>
+              <tr><th scope="row">Blanqueamiento combinado</th><td>290&nbsp;€</td></tr>
+              <tr><th scope="row">Carilla de porcelana</th><td>desde 390&nbsp;€</td></tr>
+              <tr><th scope="row">Implante + pilar</th><td>desde 950&nbsp;€</td></tr>
+              <tr><th scope="row">Corona de zirconio</th><td>desde 450&nbsp;€</td></tr>
+              <tr><th scope="row">Ortodoncia invisible</th><td>desde 2.900&nbsp;€</td></tr>
+            </tbody>
+          </table>
+          <p class="fine">Precios orientativos de una clínica ficticia, IVA exento (servicios sanitarios).</p>
+        </div>
+        <div class="calc reveal" data-calc>
+          <h3 class="calc__title">Calcula tu cuota</h3>
+          <label for="calc-total">Importe del tratamiento <output class="mono" data-calc-total-out>1.400 €</output></label>
+          <input id="calc-total" type="range" min="300" max="6000" step="50" value="1400" data-calc-total>
+          <label for="calc-meses">Meses <output class="mono" data-calc-meses-out>12</output></label>
+          <input id="calc-meses" type="range" min="3" max="24" step="3" value="12" data-calc-meses>
+          <p class="calc__fee"><span class="tnum" data-calc-fee>116,67</span><span class="calc__cur">€/mes</span></p>
+          <p class="calc__note mono">0&nbsp;% TIN · 0&nbsp;% TAE · sujeto a aprobación de la financiera</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== OPINIONES ===================== -->
+    <section class="sec sec--abisal" id="opiniones" aria-labelledby="op-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--center">
+          <p class="eyebrow">08 · Opiniones</p>
+          <h2 class="sec-title" id="op-title">Lo que <em>contarían</em> nuestros pacientes.</h2>
+          <p class="sec-lead">Textos de ejemplo de esta demo. En la web real se enlazan las reseñas de Google de la clínica.</p>
+        </header>
+        <ul class="quotes" role="list">
+          <li class="quote reveal"><p>«Me enseñaron mi implante en la pantalla antes de ponérmelo. Entré con miedo y salí con un diente provisional.»</p><p class="quote__who mono">Ejemplo · paciente de implantes</p></li>
+          <li class="quote reveal"><p>«Mi hija pide volver “a ver a Perla”. Nunca pensé que diría esto de un dentista.»</p><p class="quote__who mono">Ejemplo · madre de paciente</p></li>
+          <li class="quote reveal"><p>«Diez meses de alineadores y nadie en el trabajo se dio cuenta hasta que vieron la sonrisa final.»</p><p class="quote__who mono">Ejemplo · ortodoncia invisible</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="sec sec--perla" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec-head">
+          <p class="eyebrow">09 · Preguntas</p>
+          <h2 class="sec-title" id="faq-title">Lo que nos <em>preguntáis</em> en recepción.</h2>
+        </header>
+        <div class="faq">
+          <details><summary>¿Cuánto cuesta un implante dental en Nácar?</summary><p>Desde 950&nbsp;€ el implante con su pilar. La corona va aparte (desde 450&nbsp;€). El estudio 3D previo con escáner y TAC es gratuito.</p></details>
+          <details><summary>¿Duele ponerse un implante?</summary><p>Se hace con anestesia local y, con cirugía guiada, sin abrir la encía en la mayoría de los casos. Si tienes miedo al dentista ofrecemos sedación consciente.</p></details>
+          <details><summary>¿Puedo pagar a plazos?</summary><p>Sí. Financiamos cualquier tratamiento de más de 300&nbsp;€ hasta en 24 meses sin intereses, sujeto a la aprobación de la entidad financiera.</p></details>
+          <details><summary>¿Atendéis urgencias?</summary><p>Sí, reservamos huecos cada día para urgencias. Llama antes de las 12:00 y te vemos ese mismo día.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CITA ===================== -->
+    <section class="sec sec--abisal cita" id="cita" aria-labelledby="cita-title">
+      <div class="wrap cita__grid">
+        <div>
+          <header class="sec-head">
+            <p class="eyebrow">10 · Cita</p>
+            <h2 class="sec-title" id="cita-title">Tu primera visita <em>es gratis.</em></h2>
+            <p class="sec-lead">Elige tratamiento, día y hora. Te escribimos por WhatsApp para confirmarla.</p>
+          </header>
+          <address class="contact">
+            <p><svg aria-hidden="true"><use href="#i-pin"/></svg>Paseo del Nácar, 7 · 06800 Mérida (Badajoz) <span class="mono">dirección ficticia</span></p>
+            <p><svg aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+34924000000">924 00 00 00</a></p>
+          </address>
+          <table class="hours">
+            <caption class="sr-only">Horario</caption>
+            <tbody>
+              <tr data-day="1 2 3 4"><th scope="row">Lunes a jueves</th><td>9:30–14:00 · 16:00–21:00</td></tr>
+              <tr data-day="5"><th scope="row">Viernes</th><td>9:30–15:00</td></tr>
+              <tr data-day="6 0"><th scope="row">Sábado y domingo</th><td>Cerrado</td></tr>
+            </tbody>
+          </table>
+          <p class="open-now mono" data-open-now></p>
+          <div class="map" data-map>
+            <p>El mapa es de OpenStreetMap y solo se carga si lo aceptas.</p>
+            <button class="btn btn--ghost btn--small" type="button" data-map-load>Cargar mapa</button>
+          </div>
+        </div>
+        <form class="form" data-form novalidate>
+          <fieldset>
+            <legend>¿Qué necesitas?</legend>
+            <div class="seg" data-trat>
+              <label><input type="radio" name="trat" value="Primera visita" checked><span>Primera visita</span></label>
+              <label><input type="radio" name="trat" value="Implantes"><span>Implantes</span></label>
+              <label><input type="radio" name="trat" value="Ortodoncia invisible"><span>Ortodoncia</span></label>
+              <label><input type="radio" name="trat" value="Blanqueamiento"><span>Blanqueamiento</span></label>
+              <label><input type="radio" name="trat" value="Revisión infantil"><span>Peques</span></label>
+              <label><input type="radio" name="trat" value="Urgencia"><span>Urgencia</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Día</legend>
+            <div class="days" data-days></div>
+          </fieldset>
+          <fieldset>
+            <legend>Hora</legend>
+            <div class="slots" data-slots></div>
+          </fieldset>
+          <label class="field">Nombre<input type="text" name="nombre" autocomplete="given-name" required maxlength="60"></label>
+          <label class="check"><input type="checkbox" name="ok" required><span>He leído la <a href="privacidad.html">política de privacidad</a>. No escribas datos de salud en el mensaje: los tratamos en consulta.</span></label>
+          <p class="form__error" data-form-error role="alert" hidden></p>
+          <button class="btn btn--accent btn--big btn--full" type="submit"><svg aria-hidden="true"><use href="#i-chat"/></svg>Pedir cita por WhatsApp</button>
+          <p class="form__note mono">No guardamos nada en esta web: el mensaje se prepara en tu WhatsApp y tú decides si lo envías.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__grid">
+      <div>
+        <a class="logo" href="#inicio" aria-label="Nácar Clínica Dental, volver arriba">
+          <svg class="logo__mark" aria-hidden="true"><use href="#i-logo"/></svg>
+          <span class="logo__word">Nácar</span>
+        </a>
+        <p class="site-footer__claim">Sonrisas diseñadas al micrómetro, en el centro de Mérida.</p>
+      </div>
+      <div class="mono site-footer__legal">
+        <p>Centro sanitario autorizado por la Junta de Extremadura · Nº de registro [PENDIENTE] (dato ficticio)</p>
+        <p>Directora médica: Dra. Lucía Sanabria · Col. 06-0000 (ficticio)</p>
+      </div>
+    </div>
+    <div class="wrap site-footer__bottom mono">
+      <p>© 2026 Nácar Clínica Dental · Concepto de Daniel Durán</p>
+      <p><a href="aviso-legal.html">Aviso legal</a> · <a href="privacidad.html">Privacidad</a> · <a href="cookies.html">Cookies</a> · <button class="linklike" type="button" data-cookie-open>Preferencias</button></p>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/34600000000?text=Hola%2C%20quiero%20pedir%20cita%20en%20N%C3%A1car" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    <svg aria-hidden="true"><use href="#i-chat"/></svg>
+  </a>
+
+  <div class="cookie-banner" data-cookies hidden role="dialog" aria-labelledby="cookie-title">
+    <p class="cookie-banner__title" id="cookie-title">Cookies y servicios externos</p>
+    <p>Esta web no usa cookies de seguimiento. Solo cargamos el mapa de OpenStreetMap si lo aceptas. <a href="cookies.html">Más información</a></p>
+    <div class="cookie-banner__actions">
+      <button class="btn btn--ghost btn--small" type="button" data-cookie="no">Solo necesarias</button>
+      <button class="btn btn--accent btn--small" type="button" data-cookie="si">Aceptar mapa</button>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+  <script type="module" src="escena.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Web de demostración con datos ficticios: no se indexa.
+# En la web de un cliente real cambia "Disallow: /" por "Allow: /".
+User-agent: *
+Disallow: /
+
+Sitemap: https://danielduranmoya-spec.github.io/web-demo-clinica-dental/sitemap.xml
