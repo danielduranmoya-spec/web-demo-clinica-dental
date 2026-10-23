@@ -11,7 +11,7 @@
     ver README.md, apartado «Regenerar el vídeo».
     Parámetros: ?w=1280&h=720  (o ?w=1080&h=1920 para vertical)
   -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Instrument+Serif:ital@0;1&family=Martian+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Martian+Mono:wght@400&display=swap">
   <style>
     html, body { margin: 0; background: #061820; }
     canvas { display: block; }
@@ -31,6 +31,7 @@
     const q = new URLSearchParams(location.search);
     const W = +(q.get('w') || 1280), H = +(q.get('h') || 720);
     const vertical = H > W;
+    const limpio = q.has('limpio'); // sin textos: para montar otros vídeos (p. ej. TikTok)
     const DUR = 24;
 
     const gl = document.getElementById('gl');
@@ -151,7 +152,7 @@
         camera.position.set(lerp(2.5, -1.2, k), lerp(0.4, 0.9, k), lerp(10, 12.5, k));
         camera.lookAt(0, -0.1, 0);
       }
-      if (vertical) { camera.position.multiplyScalar(1.05); }
+      if (vertical) { camera.position.multiplyScalar(0.72); }
 
       // Capítulo 1
       U.uTime.value = t; U.uMorph.value = Math.min(1.4, t / 2.4 * 1.4);
@@ -201,7 +202,7 @@
       if (t >= 18) g2.rotation.y = 0.48 + (t - 18) * 0.15;
       // Perla
       const pk = smooth(20, 20.8, t);
-      perla.position.set(vertical ? 0.9 : 2.3, -1.2 + Math.sin(t * 3) * 0.04, 0.6);
+      perla.position.set(vertical ? 0.42 : 2.3, (vertical ? -2.15 : -1.2) + Math.sin(t * 3) * 0.04, vertical ? 1.1 : 0.6);
       perla.scale.setScalar(0.55 * pk);
       perla.rotation.y = -0.5;
       perla.userData.brazos[1].rotation.z = 2.5 + Math.sin(t * 12) * 0.35;
@@ -227,6 +228,7 @@
         gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.22)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
       }
+      if (limpio) return true;
       // Títulos de capítulo
       const u = H / 720;
       const pad = (vertical ? 64 : 56) * u;
@@ -236,7 +238,7 @@
       ctx.font = `${13 * u}px "Martian Mono"`;
       ctx.fillText(`${CAP[cap].n} / 04 · NÁCAR`, pad, pad + 10 * u);
       ctx.fillStyle = '#EAF4F2';
-      ctx.font = `${(vertical ? 64 : 54) * u}px "Instrument Serif"`;
+      ctx.font = `${(vertical ? 64 : 54) * u}px "Fraunces"`;
       ctx.fillText(CAP[cap].t, pad, pad + (vertical ? 76 : 66) * u);
       ctx.fillStyle = '#9DB7BC';
       ctx.font = `${17 * u}px "Hanken Grotesk"`;
@@ -251,7 +253,7 @@
         ctx.globalAlpha = a;
         ctx.fillStyle = 'rgba(6,24,32,0.55)'; ctx.fillRect(0, H * 0.72, W, H * 0.28);
         ctx.fillStyle = '#EAF4F2'; ctx.textAlign = 'center';
-        ctx.font = `italic ${(vertical ? 58 : 44) * u}px "Instrument Serif"`;
+        ctx.font = `italic ${(vertical ? 58 : 44) * u}px "Fraunces"`;
         ctx.fillText('Primera visita y estudio 3D gratis', W / 2, H * 0.82);
         ctx.fillStyle = '#5FE0C8'; ctx.font = `${14 * u}px "Martian Mono"`;
         ctx.fillText('Clínica ficticia · concepto de web de Daniel Durán', W / 2, H * 0.82 + 40 * u);
@@ -259,7 +261,7 @@
       }
       return true;
     };
-    Promise.all(['54px "Instrument Serif"', 'italic 44px "Instrument Serif"', '17px "Hanken Grotesk"', '13px "Martian Mono"'].map(f => document.fonts.load(f)))
+    Promise.all(['54px "Fraunces"', 'italic 44px "Fraunces"', '17px "Hanken Grotesk"', '13px "Martian Mono"'].map(f => document.fonts.load(f)))
       .then(() => document.fonts.ready).then(() => { window.listo = true; });
   </script>
 </body>

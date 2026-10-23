@@ -31,7 +31,7 @@ web-demo-clinica-dental/
 | Legal | Aviso legal (LSSI, registro sanitario, publicidad sanitaria), privacidad (RGPD con datos de salud) y cookies. |
 | Pantallas | Probada a 390, 768 y 1440 px de ancho, sin scroll horizontal. Respeta «reducir movimiento». |
 
-Tipografías: **Instrument Serif** (titulares), Hanken Grotesk (texto) y Martian Mono (detalles). Paleta: azul abisal `#0A2530`, perla `#F5F2ED`, menta quirúrgica `#5FE0C8` y coral encía `#F07D6A`.
+Tipografías: **Fraunces** (titulares), Hanken Grotesk (texto) y Martian Mono (detalles). Paleta: azul abisal `#0A2530`, perla `#F5F2ED`, menta quirúrgica `#5FE0C8` y coral encía `#F07D6A`.
 
 ## Es una demo: no se indexa
 
